@@ -9,9 +9,9 @@
   "author": "Djordje Mikic",
   "license": "MIT",
   "scripts": {
-    "build-tsc": "yarn tsc -w",
-    "dev": "webpack-dev-server --mode development",
-    "build": "webpack --mode production"
+    "build": "yarn tsc -w",
+    "dev-pack": "webpack-dev-server --mode development",
+    "build-pack": "webpack --mode production"
   },
   "devDependencies": {
     "@babel/cli": "^7.22.5",

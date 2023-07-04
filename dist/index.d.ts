@@ -1,13 +1,12 @@
 export interface Options {
     processVideo: (blob: Blob) => void;
-    interval: number;
     onEnded?: (e: any) => void;
     processChunks?: (chunk: any) => void;
     resetChunks?: boolean;
+    interval?: number;
 }
 export declare class ScreenRecording {
     private recordingInProgress;
-    private saved;
     private chunks;
     private mediaRecorder;
     private recordingStream;
@@ -17,8 +16,8 @@ export declare class ScreenRecording {
     private resetChunks?;
     private interval;
     constructor(options: Options);
-    requestRecordingPermission(): Promise<unknown>;
+    startRecording(): Promise<unknown>;
     stopRecording(): void;
-    startRecording(): void;
-    cleanChunks(): void;
+    private start;
+    private cleanChunks;
 }
