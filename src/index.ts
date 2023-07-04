@@ -8,7 +8,6 @@ export interface Options {
 
 export class ScreenRecording {
   private recordingInProgress: boolean;
-  private saved: boolean;
   private chunks: Blob[];
   private mediaRecorder: MediaRecorder | null;
   private recordingStream: MediaStream | null;
@@ -20,7 +19,6 @@ export class ScreenRecording {
 
   constructor(options: Options) {
     this.recordingInProgress = false;
-    this.saved = false;
     this.chunks = [];
     this.mediaRecorder = null;
     this.recordingStream = null;
