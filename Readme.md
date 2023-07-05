@@ -18,7 +18,7 @@ yarn
 ```js
   import { ScreenRecording } from 'screen-recording';
 
-  const recording = new ScreenRecording({
+  const recording = ScreenRecording({
     processVideo: (blob: Blob) => void, // *Required (what to do with with video recorded),
     onEnded: (e: Event) => void, // Optional action which happens when you click on stop sharing popup
     processChunks: (chunk) => void, // Optional action which happens when chunk data is available.

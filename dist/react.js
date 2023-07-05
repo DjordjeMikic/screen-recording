@@ -40,7 +40,6 @@ const ScreenRecording = (options) => {
             mediaRecorder.stop();
         }
     };
-    const cleanChunks = () => chunks.length = 0;
     const start = () => {
         if (recordingInProgress)
             return;
@@ -75,6 +74,7 @@ const ScreenRecording = (options) => {
         });
         mediaRecorder.start(interval);
     };
-    return { startRecording, stopRecording, recordingInProgress };
+    const cleanChunks = () => chunks.length = 0;
+    return { startRecording, stopRecording };
 };
 exports.ScreenRecording = ScreenRecording;

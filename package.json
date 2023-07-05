@@ -1,6 +1,6 @@
 {
   "name": "screen-recording",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Fe recording",
   "main": "dist/index.js",
   "module": "dist/index.js",

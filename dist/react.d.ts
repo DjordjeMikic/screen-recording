@@ -8,5 +8,4 @@ export interface Options {
 export declare const ScreenRecording: (options: Options) => {
     startRecording: () => Promise<unknown>;
     stopRecording: () => void;
-    recordingInProgress: boolean;
 };
