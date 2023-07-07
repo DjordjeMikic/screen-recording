@@ -12,8 +12,8 @@ export const ScreenRecording = (options: Options) => {
   const processVideo: (blob: Blob) => void = options.processVideo;
   const onEnded: VoidParam | undefined = options?.onEnded;
   const processChunks: VoidParam | undefined = options?.processChunks;
-  const  resetChunks: boolean = options.resetChunks || false;
-  const  interval: number = options.interval || 5000;
+  const resetChunks: boolean = options.resetChunks || false;
+  const interval: number = options.interval || 5000;
 
   let recordingInProgress: boolean = false;
   let chunks: Blob[] = [];
@@ -21,85 +21,90 @@ export const ScreenRecording = (options: Options) => {
   let recordingStream: MediaStream | null = null;
 
   const startRecording = async () => {
-      try {
-          const stream: MediaStream = await navigator.mediaDevices.getDisplayMedia({
-              audio: {
-              echoCancellation: true,
-              noiseSuppression: true,
-              },
-              video: {
-              displaySurface: 'monitor',
-              height: 1200,
-              width: 1440,
-              },
-          } as DisplayMediaStreamOptions);
+    try {
+      const stream: MediaStream = await navigator.mediaDevices.getDisplayMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+        },
+        video: {
+          displaySurface: 'monitor',
+          height: 1200,
+          width: 1440,
+        },
+      } as DisplayMediaStreamOptions);
 
       if (stream) {
-          recordingStream = stream as any;
-          start();
-          return stream;
+        recordingStream = stream as any;
+        start();
+        return stream;
       }
-
-      } catch (e) {
-          return e;
-      }
-  }
+    } catch (e) {
+      return e;
+    }
+  };
 
   const stopRecording = () => {
-      recordingInProgress = false;
+    recordingInProgress = false;
 
-      if (mediaRecorder && mediaRecorder.state === 'recording') {
-          mediaRecorder.stop();
-      }
-  }
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      mediaRecorder.stop();
+    }
+  };
 
-  const cleanChunks = () => chunks.length = 0;
+  const cleanChunks = () => (chunks.length = 0);
 
   const start = () => {
-      if (recordingInProgress) return;
+    if (recordingInProgress) return;
 
-      if (!recordingStream) {
-          console.log('Could not start recording');
-          return;
+    if (!recordingStream) {
+      console.log('Could not start recording');
+      return;
+    }
+
+    recordingInProgress = true;
+
+    const readyStream = new MediaStream();
+
+    recordingStream.getTracks().forEach((track) => {
+      readyStream.addTrack(track);
+    });
+
+    recordingStream.getTracks()[0].onended = (e) => {
+      onEnded?.(e);
+    };
+
+    mediaRecorder = new MediaRecorder(readyStream, {
+      mimeType: 'video/webm;codecs=vp8,opus',
+    });
+
+    mediaRecorder.addEventListener('dataavailable', (chunk) => {
+      chunks.push(chunk.data);
+      processChunks?.(chunk);
+    });
+
+    mediaRecorder.addEventListener('stop', async (e) => {
+      if (recordingStream) {
+        recordingStream.getTracks().forEach((track) => track.stop());
       }
 
-      recordingInProgress = true;
+      recordingStream = null;
 
-      const readyStream = new MediaStream();
+      console.log('Now it should download');
 
-      recordingStream.getTracks().forEach((track) => {
-          readyStream.addTrack(track);
-      });
+      processVideo(new Blob(chunks, { type: chunks[0].type }));
 
-      recordingStream.getTracks()[0].onended = (e) => {
-          onEnded?.(e);
-      };
+      if (resetChunks) cleanChunks();
+    });
 
-      mediaRecorder = new MediaRecorder(readyStream, {
-          mimeType: 'video/webm;codecs=vp8,opus',
-      });
+    mediaRecorder.start(interval);
+  };
 
-      mediaRecorder.addEventListener('dataavailable', (chunk) => {
-          chunks.push(chunk.data);
-          processChunks?.(chunk);
-      });
+  const getRecordingInProgress = () => recordingInProgress;
 
-      mediaRecorder.addEventListener('stop', async (e) => {
-          if (recordingStream) {
-              recordingStream.getTracks().forEach((track) => track.stop());
-          }
-
-          recordingStream = null;
-
-          console.log('Now it should download');
-
-          processVideo(new Blob(chunks, { type: chunks[0].type }));
-
-          if (resetChunks) cleanChunks();
-      });
-
-      mediaRecorder.start(interval);
-  }
-
-  return { startRecording, stopRecording, recordingInProgress };
-}
+  return {
+    startRecording,
+    stopRecording,
+    getRecordingInProgress,
+  };
+};
