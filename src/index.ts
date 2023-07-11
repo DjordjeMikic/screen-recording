@@ -58,7 +58,7 @@ export const ScreenRecording = (options: Options) => {
     if (recordingInProgress) return;
 
     if (!recordingStream) {
-      console.log('Could not start recording');
+      console.error('Could not start recording');
       return;
     }
 

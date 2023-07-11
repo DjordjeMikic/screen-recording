@@ -30,4 +30,6 @@ yarn
   recording.startRecording();
   // Stop recording
   recording.stopRecording();
+  // Check is recording in progress
+  recording.getRecordingInProgress();
 ```

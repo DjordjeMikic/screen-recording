@@ -1,6 +1,6 @@
 {
   "name": "screen-recording",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Fe recording",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -8,6 +8,7 @@
   "type": "commonjs",
   "author": "Djordje Mikic",
   "license": "MIT",
+  "repository": "https://github.com/DjordjeMikic/screen-recording.git",
   "scripts": {
     "build": "yarn tsc -w",
     "dev-pack": "webpack-dev-server --mode development",
